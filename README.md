@@ -11,6 +11,18 @@ This repository builds a custom Docker image for [n8n](https://n8n.io) with [`pu
   - `puppeteer-extra`
   - `puppeteer-extra-plugin-stealth`
 
+## ⚙️ Environment Variables
+
+When deploying your custom image, set the following environment variables (e.g., in Docker Compose, Kubernetes, or your host environment) to allow n8n Code nodes to load external modules:
+
+```yaml
+environment:
+  - NODE_FUNCTION_ALLOW_EXTERNAL=puppeteer-extra,puppeteer-extra-plugin-stealth
+```
+
+* `NODE_FUNCTION_ALLOW_EXTERNAL` permits usage of external NPM modules in n8n Code nodes.
+
+
 ## 📦 Image
 
 > **GHCR Repository:**  
