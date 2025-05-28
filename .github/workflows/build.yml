@@ -41,9 +41,9 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.CR_PAT }}" \
             https://ghcr.io/v2/${{ github.repository }}/manifests/$tag)
           if [ "$status" -eq 200 ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "exists=true" >> "$GITHUB_OUTPUT"
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Exit if image already exists
