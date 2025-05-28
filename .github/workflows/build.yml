@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
+    inputs:
+      force_build:
+        description: 'Set to "true" to rebuild even if the image exists'
+        required: false
+        default: 'false'
 
 permissions:
   contents: read
@@ -65,7 +70,7 @@ jobs:
   build:
     needs: check
     runs-on: ubuntu-latest
-    if: needs.check.outputs.exists == 'false'
+    if: needs.check.outputs.exists == 'false' || (github.event_name == 'workflow_dispatch' && github.event.inputs.force_build == 'true')
     steps:
       - uses: actions/checkout@v4
 
