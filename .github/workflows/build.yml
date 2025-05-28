@@ -11,6 +11,7 @@ permissions:
   contents: read
   packages: write
 
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -38,14 +39,22 @@ jobs:
             | sort -Vr | head -n 1)
           echo "n8n_tag=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Check if image exists on GHCR
+      - name: Check if tag exists on GHCR
         id: tag_exists
         run: |
-          tag="${{ steps.find_tag.outputs.n8n_tag }}"
-          status=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://ghcr.io/v2/${{ github.repository }}/manifests/$tag)
-          if [ "$status" -eq 200 ]; then
+          TAG=${{ steps.find_tag.outputs.n8n_tag }}
+          # 1. Get a pull-token for this repo
+          GHCR_TOKEN=$(curl -s -u "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}" \
+            "https://ghcr.io/token?service=ghcr.io&scope=repository:${{ github.repository }}:pull" \
+            | jq -r .token)
+
+          # 2. Query the manifest using that token
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+            -H "Authorization: Bearer $GHCR_TOKEN" \
+            https://ghcr.io/v2/${{ github.repository }}/manifests/$TAG)
+          echo "status=$STATUS"
+          if [ "$STATUS" -eq 200 ]; then
             echo "exists=true"  >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
