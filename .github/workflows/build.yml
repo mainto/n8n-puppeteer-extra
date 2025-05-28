@@ -65,7 +65,7 @@ jobs:
   build:
     needs: check
     runs-on: ubuntu-latest
-    if: ${{ needs.check.outputs.exists }} == 'false'
+    if: needs.check.outputs.exists == 'false'
     steps:
       - uses: actions/checkout@v4
 
