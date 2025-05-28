@@ -1,9 +1,6 @@
-name: Auto-Build Custom n8n (Stable Digest Match)
+name: Auto-Build Custom n8n (External Browser)
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: '0 * * * *'  # Every hour
   workflow_dispatch:
@@ -37,7 +34,7 @@ jobs:
         id: tag_exists
         run: |
           tag=${{ steps.find_tag.outputs.n8n_tag }}
-          exists=$(curl -s -H "Authorization: Bearer ${{ secrets.CR_PAT }}" \
+          exists=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             https://ghcr.io/v2/${{ github.repository }}/manifests/$tag \
             | jq -e .errors > /dev/null; echo $?)
           echo "exists=$exists" >> $GITHUB_OUTPUT
@@ -54,7 +51,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push image
         uses: docker/build-push-action@v5
