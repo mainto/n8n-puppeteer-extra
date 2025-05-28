@@ -50,7 +50,7 @@ jobs:
 
           # 2. Query the manifest using that token
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+            -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.index.v1+json" \
             -H "Authorization: Bearer $GHCR_TOKEN" \
             https://ghcr.io/v2/${{ github.repository }}/manifests/$TAG)
           echo "status=$STATUS"
