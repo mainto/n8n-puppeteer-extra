@@ -13,7 +13,7 @@ This repository builds a custom Docker image for [n8n](https://n8n.io) with [`pu
 
 ## ⚙️ Environment Variables
 
-When deploying your custom image, set the following environment variables (e.g., in Docker Compose, Kubernetes, or your host environment) to allow n8n Code nodes to load external modules:
+When deploying this custom n8n image, set the following environment variables (e.g., in Docker Compose, Kubernetes, or your host environment) to allow n8n Code nodes to load external modules:
 
 ```yaml
 environment:
