@@ -44,7 +44,7 @@ jobs:
         run: |
           TAG=${{ steps.find_tag.outputs.n8n_tag }}
           # 1. Get a pull-token for this repo
-          GHCR_TOKEN=$(curl -s -u "mainto:${{ secrets.GHCR_PAT }}" \
+          GHCR_TOKEN=$(curl -s -u "mainto:${{ secrets.CR_PAT }}" \
             "https://ghcr.io/token?service=ghcr.io&scope=repository:${{ github.repository }}:pull" \
             | jq -r .token)
 
