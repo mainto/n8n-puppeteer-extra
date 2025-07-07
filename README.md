@@ -10,6 +10,7 @@ This repository builds a custom Docker image for [n8n](https://n8n.io) with [`pu
 - Ready for Code node automation with:
   - `puppeteer-extra`
   - `puppeteer-extra-plugin-stealth`
+- Includes **ffmpeg** for media processing
 
 ## ⚙️ Environment Variables
 
