@@ -3,8 +3,8 @@ name: Auto-Build Custom n8n (External Browser)
 on:
   push:
     branches: [ main ]
-  schedule:
-    - cron: '0 * * * *'
+  repository_dispatch:
+    types: [n8n_new_release]
   workflow_dispatch:
     inputs:
       force_build:
