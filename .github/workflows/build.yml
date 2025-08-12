@@ -31,8 +31,8 @@ jobs:
       - name: Get digest of n8n:stable
         id: get_digest
         run: |
-          digest=$(curl -s 'https://hub.docker.com/v2/repositories/n8nio/n8n/tags/stable' \
-            | jq -r '.images[0].digest')
+          digest=$(curl -s 'https://hub.docker.com/v2/repositories/n8nio/n8n/tags/?page_size=100' \
+            | jq -r '.results[] | select(.name == "stable") | .digest')
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
 
       - name: Find matching version tag
