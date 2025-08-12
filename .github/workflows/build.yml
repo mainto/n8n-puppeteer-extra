@@ -40,8 +40,7 @@ jobs:
         run: |
           digest="${{ steps.get_digest.outputs.digest }}"
           version=$(curl -s 'https://hub.docker.com/v2/repositories/n8nio/n8n/tags/?page_size=100' \
-            | jq -r --arg digest "$digest" \
-                '.results[] | select(.images[]?.digest == $digest) | .name' \
+            | jq -r --arg digest "$digest" '.results[] | select(.digest == $digest) | .name' \
             | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
             | sort -Vr | head -n 1)
           echo "n8n_tag=$version" >> "$GITHUB_OUTPUT"
