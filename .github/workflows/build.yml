@@ -35,8 +35,6 @@ jobs:
             "https://ghcr.io/token?service=ghcr.io&scope=repository:n8n-io/n8n:pull" \
             | jq -r .token)
           echo "GHCR_TOKEN=$GHCR_TOKEN" >> $GITHUB_ENV
-          half_len=$(( ${#GHCR_TOKEN} / 2 ))
-          echo "GHCR_TOKEN_PARTS=${GHCR_TOKEN:0:$half_len}.${GHCR_TOKEN:$half_len}"
 
       - name: Get latest n8n tag and digest
         id: get_latest_tag_and_digest
@@ -54,7 +52,7 @@ jobs:
       - name: Check if tag exists on GHCR
         id: tag_exists
         run: |
-          TAG=${{ steps.find_tag.outputs.n8n_tag }}
+          TAG=${{ steps.get_latest_tag_and_digest.outputs.n8n_tag }}
           # 1. Get a pull-token for this repo
           GHCR_TOKEN=$(curl -s -u "mainto:${{ secrets.CR_PAT }}" \
             "https://ghcr.io/token?service=ghcr.io&scope=repository:${{ github.repository }}:pull" \
