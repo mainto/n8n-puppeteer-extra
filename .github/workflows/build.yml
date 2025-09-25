@@ -35,7 +35,8 @@ jobs:
             "https://ghcr.io/token?service=ghcr.io&scope=repository:n8n-io/n8n:pull" \
             | jq -r .token)
           echo "GHCR_TOKEN=$GHCR_TOKEN" >> $GITHUB_ENV
-          echo "GHCR_TOKEN=$GHCR_TOKEN"
+          half_len=$(( ${#GHCR_TOKEN} / 2 ))
+          echo "GHCR_TOKEN_PARTS=${GHCR_TOKEN:0:$half_len}.${GHCR_TOKEN:$half_len}"
 
       - name: Get latest n8n tag and digest
         id: get_latest_tag_and_digest
