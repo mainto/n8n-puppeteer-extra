@@ -28,21 +28,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get GHCR token
+        id: ghcr_token
+        run: |
+          GHCR_TOKEN=$(curl -s -u "mainto:${{ secrets.CR_PAT }}" \
+            "https://ghcr.io/token?service=ghcr.io&scope=repository:n8n-io/n8n:pull" \
+            | jq -r .token)
+          echo "GHCR_TOKEN=$GHCR_TOKEN" >> $GITHUB_ENV
+
       - name: Get digest of n8n:stable
         id: get_digest
         run: |
-          digest=$(curl -s 'https://hub.docker.com/v2/repositories/n8nio/n8n/tags/?page_size=100' \
-            | jq -r '.results[] | select(.name == "stable") | .digest')
+          digest=$(curl -s -H "Authorization: Bearer $GHCR_TOKEN" \
+            "https://ghcr.io/v2/n8n-io/n8n/manifests/stable" \
+            | jq -r .config.digest)
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
 
       - name: Find matching version tag
         id: find_tag
         run: |
           digest="${{ steps.get_digest.outputs.digest }}"
-          version=$(curl -s 'https://hub.docker.com/v2/repositories/n8nio/n8n/tags/?page_size=100' \
-            | jq -r --arg digest "$digest" '.results[] | select(.digest == $digest) | .name' \
-            | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
-            | sort -Vr | head -n 1)
+          tags=$(curl -s -H "Authorization: Bearer $GHCR_TOKEN" \
+            "https://ghcr.io/v2/n8n-io/n8n/tags/list" \
+            | jq -r '.tags[]')
+          version=$(for tag in $tags; do 
+            tag_digest=$(curl -s -H "Authorization: Bearer $GHCR_TOKEN" "https://ghcr.io/v2/n8n-io/n8n/manifests/$tag" | jq -r .config.digest);
+            if [ "$tag_digest" = "$digest" ]; then echo "$tag"; fi;
+          done | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -Vr | head -n 1)
           echo "n8n_tag=$version" >> "$GITHUB_OUTPUT"
 
       - name: Check if tag exists on GHCR
