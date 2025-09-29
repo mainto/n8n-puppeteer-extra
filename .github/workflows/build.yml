@@ -64,6 +64,7 @@ jobs:
             exit 1 # Unauthorized
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "n8n_tag=$TAG" >> "$GITHUB_OUTPUT"
           fi
 
   build:
