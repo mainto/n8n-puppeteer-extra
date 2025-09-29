@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       exists: ${{ steps.tag_exists.outputs.exists }}
-      n8n_tag: ${{ steps.find_tag.outputs.n8n_tag }}
+      n8n_tag: ${{ steps.get_latest_release_tag.outputs.n8n_tag }}
     steps:
       - uses: actions/checkout@v4
 
@@ -64,7 +64,6 @@ jobs:
             exit 1 # Unauthorized
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "n8n_tag=$TAG" >> "$GITHUB_OUTPUT"
           fi
 
   build:
