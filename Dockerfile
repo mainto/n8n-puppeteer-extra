@@ -48,7 +48,10 @@ RUN set -eux; \
   grep -n "X-Upload-Content-Type" "$FILE"
 # --- /PATCH ---
 
-# Only install puppeteer and plugins — no Chromium
-RUN npm install -g puppeteer-core puppeteer-extra puppeteer-extra-plugin-stealth puppeteer-extra-plugin-user-data-dir puppeteer-extra-plugin-user-preferences
+# Install puppeteer and plugins for n8n task runner
+# Task runner uses pnpm and requires packages in its node_modules directory
+RUN TASK_RUNNER_DIR=$(find /usr/local/lib/node_modules/n8n/node_modules/.pnpm -type d -name '@n8n' -path '*task-runner*' | head -1) && \
+    cd "$TASK_RUNNER_DIR/task-runner" && \
+    pnpm add puppeteer-core puppeteer-extra puppeteer-extra-plugin-stealth puppeteer-extra-plugin-user-data-dir puppeteer-extra-plugin-user-preferences
 
 USER node
