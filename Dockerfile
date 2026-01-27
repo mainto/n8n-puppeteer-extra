@@ -56,7 +56,7 @@ RUN TASK_RUNNER_DIR=$(find /usr/local/lib/node_modules/n8n/node_modules/.pnpm -t
     if [ -z "$TASK_RUNNER_DIR" ]; then echo "ERROR: task-runner directory not found"; exit 1; fi && \
     echo "Installing puppeteer packages in: $TASK_RUNNER_DIR" && \
     cd "$TASK_RUNNER_DIR" && \
-    pnpm add \
+    pnpm add --ignore-workspace \
         puppeteer-core \
         puppeteer-extra \
         puppeteer-extra-plugin-stealth \
