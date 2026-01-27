@@ -65,7 +65,7 @@ RUN TASK_RUNNER_DIR=$(find /usr/local/lib/node_modules/n8n/node_modules/.pnpm -t
         puppeteer-extra-plugin-user-data-dir \
         puppeteer-extra-plugin-user-preferences && \
     mkdir -p "$TASK_RUNNER_DIR/node_modules" && \
-    cp -r node_modules/. "$TASK_RUNNER_DIR/node_modules/" && \
+    cp -rf node_modules/. "$TASK_RUNNER_DIR/node_modules/" && \
     rm -rf /tmp/puppeteer-install
 
 USER node
