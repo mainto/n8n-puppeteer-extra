@@ -52,11 +52,12 @@ RUN set -eux; \
 # Task runner uses pnpm and requires packages in its node_modules directory
 # The find command locates the task-runner directory within pnpm's virtual store
 # Example path: /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+task-runner@file+.../@n8n/task-runner
+# We use npm instead of pnpm to avoid workspace catalog resolution issues
 RUN TASK_RUNNER_DIR=$(find /usr/local/lib/node_modules/n8n/node_modules/.pnpm -type d -name 'task-runner' -path '*/@n8n/task-runner' | head -1) && \
     if [ -z "$TASK_RUNNER_DIR" ]; then echo "ERROR: task-runner directory not found"; exit 1; fi && \
     echo "Installing puppeteer packages in: $TASK_RUNNER_DIR" && \
     cd "$TASK_RUNNER_DIR" && \
-    pnpm add --ignore-workspace \
+    npm install --no-save \
         puppeteer-core \
         puppeteer-extra \
         puppeteer-extra-plugin-stealth \
