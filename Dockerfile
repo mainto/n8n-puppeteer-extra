@@ -50,10 +50,17 @@ RUN set -eux; \
 
 # Install puppeteer and plugins for n8n task runner
 # Task runner uses pnpm and requires packages in its node_modules directory
+# The find command locates the task-runner directory within pnpm's virtual store
+# Example path: /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+task-runner@file+.../@n8n/task-runner
 RUN TASK_RUNNER_DIR=$(find /usr/local/lib/node_modules/n8n/node_modules/.pnpm -type d -name 'task-runner' -path '*/@n8n/task-runner' | head -1) && \
     if [ -z "$TASK_RUNNER_DIR" ]; then echo "ERROR: task-runner directory not found"; exit 1; fi && \
     echo "Installing puppeteer packages in: $TASK_RUNNER_DIR" && \
     cd "$TASK_RUNNER_DIR" && \
-    pnpm add puppeteer-core puppeteer-extra puppeteer-extra-plugin-stealth puppeteer-extra-plugin-user-data-dir puppeteer-extra-plugin-user-preferences
+    pnpm add \
+        puppeteer-core \
+        puppeteer-extra \
+        puppeteer-extra-plugin-stealth \
+        puppeteer-extra-plugin-user-data-dir \
+        puppeteer-extra-plugin-user-preferences
 
 USER node
