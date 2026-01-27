@@ -52,16 +52,20 @@ RUN set -eux; \
 # Task runner uses pnpm and requires packages in its node_modules directory
 # The find command locates the task-runner directory within pnpm's virtual store
 # Example path: /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+task-runner@file+.../@n8n/task-runner
-# We use npm instead of pnpm to avoid workspace catalog resolution issues
+# We install in /tmp to avoid workspace dependency conflicts, then move to task-runner
 RUN TASK_RUNNER_DIR=$(find /usr/local/lib/node_modules/n8n/node_modules/.pnpm -type d -name 'task-runner' -path '*/@n8n/task-runner' | head -1) && \
     if [ -z "$TASK_RUNNER_DIR" ]; then echo "ERROR: task-runner directory not found"; exit 1; fi && \
-    echo "Installing puppeteer packages in: $TASK_RUNNER_DIR" && \
-    cd "$TASK_RUNNER_DIR" && \
-    npm install --no-save \
+    echo "Installing puppeteer packages for: $TASK_RUNNER_DIR" && \
+    mkdir -p /tmp/puppeteer-install && \
+    cd /tmp/puppeteer-install && \
+    npm install --omit=dev --no-audit --no-fund \
         puppeteer-core \
         puppeteer-extra \
         puppeteer-extra-plugin-stealth \
         puppeteer-extra-plugin-user-data-dir \
-        puppeteer-extra-plugin-user-preferences
+        puppeteer-extra-plugin-user-preferences && \
+    mkdir -p "$TASK_RUNNER_DIR/node_modules" && \
+    cp -rf node_modules/. "$TASK_RUNNER_DIR/node_modules/" && \
+    rm -rf /tmp/puppeteer-install
 
 USER node
