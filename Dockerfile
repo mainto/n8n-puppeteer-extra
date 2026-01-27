@@ -58,14 +58,14 @@ RUN TASK_RUNNER_DIR=$(find /usr/local/lib/node_modules/n8n/node_modules/.pnpm -t
     echo "Installing puppeteer packages for: $TASK_RUNNER_DIR" && \
     mkdir -p /tmp/puppeteer-install && \
     cd /tmp/puppeteer-install && \
-    npm install --omit=dev \
+    npm install --omit=dev --no-audit --no-fund \
         puppeteer-core \
         puppeteer-extra \
         puppeteer-extra-plugin-stealth \
         puppeteer-extra-plugin-user-data-dir \
         puppeteer-extra-plugin-user-preferences && \
     mkdir -p "$TASK_RUNNER_DIR/node_modules" && \
-    cp -r node_modules/* "$TASK_RUNNER_DIR/node_modules/" && \
+    cp -r node_modules/. "$TASK_RUNNER_DIR/node_modules/" && \
     rm -rf /tmp/puppeteer-install
 
 USER node
