@@ -93,6 +93,8 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            N8N_VERSION=${{ needs.check.outputs.n8n_tag }}
           tags: |
             ghcr.io/${{ github.repository }}:${{ needs.check.outputs.n8n_tag }}
             ghcr.io/${{ github.repository }}:latest
