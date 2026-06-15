@@ -39,7 +39,7 @@ jobs:
       - name: Get latest n8n release tag from GitHub
         id: get_latest_release_tag
         run: |
-          releases_json=$(curl -fsSL https://api.github.com/repos/n8n-io/n8n/releases)
+          releases_json=$(curl -fsSL https://api.github.com/repos/n8n-io/n8n/releases?per_page=100)
           n8n_tag=$(echo "$releases_json" | jq -r '
             [
               .[]
