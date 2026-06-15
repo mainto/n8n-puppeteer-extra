@@ -39,8 +39,25 @@ jobs:
       - name: Get latest n8n release tag from GitHub
         id: get_latest_release_tag
         run: |
-          raw_tag=$(curl -s https://api.github.com/repos/n8n-io/n8n/releases | jq -r '.[0].tag_name')
-          n8n_tag=${raw_tag#*@}
+          releases_json=$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/n8n-io/n8n/releases?per_page=100)
+          n8n_tag=$(echo "$releases_json" | jq -r '
+            [
+              .[]
+              | select(.draft == false and .prerelease == false)
+              | .tag_name
+              | sub("^.*@"; "")
+              | sub("^v"; "")
+              | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))
+            ]
+            | sort_by(split(".") | map(tonumber))
+            | last // empty
+          ')
+          if [ -z "$n8n_tag" ]; then
+            echo "Could not determine latest stable n8n version from releases API" >&2
+            exit 1
+          fi
           echo "n8n_tag=$n8n_tag" >> "$GITHUB_OUTPUT"
 
       - name: Check if tag exists on GHCR
